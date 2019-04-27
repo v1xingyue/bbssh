@@ -31,6 +31,7 @@ func EncodeSSHKey(public *rsa.PublicKey) ([]byte, error) {
 	return ssh.MarshalAuthorizedKey(publicKey), nil
 }
 
+// 默认ssh rsa 长度为2048
 func MakeSSHKeyPair(bits int) (string, string, error) {
 	pkey, pubkey, err := GenerateKey(bits)
 	if err != nil {

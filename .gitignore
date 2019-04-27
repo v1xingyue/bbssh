@@ -1,2 +1,4 @@
-config.go
+never
+build
 vendor
+.rsa
