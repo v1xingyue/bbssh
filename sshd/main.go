@@ -2,6 +2,7 @@ package sshd
 
 import (
 	option "bbssh/options/sshd"
+	"bbssh/user"
 	"encoding/binary"
 	"fmt"
 	"io"
@@ -23,7 +24,8 @@ func StartSshd() {
 		//PasswordCallback:  passwordCallback,
 		PublicKeyCallback: publicKeyCallback,
 		MaxAuthTries:      3,
-		ServerVersion:     option.ServerVersion,
+		//ServerVersion:     "",
+		ServerVersion: option.ServerVersion,
 	}
 
 	privateBytes, err := ioutil.ReadFile(option.RsaFile)
@@ -57,23 +59,21 @@ func StartSshd() {
 			continue
 		}
 
-		log.Printf("New SSH connection from %s (%s)", sshConn.RemoteAddr(), sshConn.ClientVersion())
+		log.Printf("New SSH connection from %s , %s (%s)", sshConn.User(), sshConn.RemoteAddr(), sshConn.ClientVersion())
 		// Discard all global out-of-band Requests
 		go ssh.DiscardRequests(reqs)
 		// Accept all channels
-		go handleChannels(chans)
+		go handleChannels(chans, sshConn.User())
 	}
 }
 
-func handleChannels(chans <-chan ssh.NewChannel) {
-	// Service the incoming Channel channel in go routine
+func handleChannels(chans <-chan ssh.NewChannel, uname string) {
 	for newChannel := range chans {
-		go handleChannel(newChannel)
+		go handleChannel(newChannel, uname)
 	}
 }
 
-func handleChannel(newChannel ssh.NewChannel) {
-	// Since we're handling a shell, we expect a
+func handleChannel(newChannel ssh.NewChannel, uname string) {
 	// channel type of "session". The also describes
 	// "x11", "direct-tcpip" and "forwarded-tcpip"
 	// channel types.
@@ -81,7 +81,6 @@ func handleChannel(newChannel ssh.NewChannel) {
 		newChannel.Reject(ssh.UnknownChannelType, fmt.Sprintf("unknown channel type: %s", t))
 		return
 	}
-
 	// At this point, we have the opportunity to reject the client's
 	// request for another logical connection
 	connection, requests, err := newChannel.Accept()
@@ -90,10 +89,16 @@ func handleChannel(newChannel ssh.NewChannel) {
 		return
 	}
 
+	uid, gid := user.LookupUidGid(uname)
 	// Fire up bash for this session
 	bash := exec.Command("bash")
+	bash.Dir = "/usr/home/xingyue"
+	bash.Env = []string{"HOME=/usr/home/" + uname, "TERM=xterm"}
 	bash.SysProcAttr = &syscall.SysProcAttr{}
-	bash.SysProcAttr.Credential = &syscall.Credential{Uid: 501, Gid: 20}
+	bash.SysProcAttr.Credential = &syscall.Credential{
+		Uid: uid,
+		Gid: gid,
+	}
 
 	// Prepare teardown function
 	close := func() {
