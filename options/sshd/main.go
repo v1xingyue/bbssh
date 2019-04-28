@@ -11,8 +11,8 @@ var (
 	BindAddr = ""
 	RsaFile  = "id_rsa"
 	Help     = false
-	//前缀必须包含 SSH-
-	ServerVersion = "SSH-CatEye" + Version
+	//前缀必须包含 SSH-2.0-
+	ServerVersion = "SSH-2.0-" + Version + "CatEye"
 )
 
 func init() {
