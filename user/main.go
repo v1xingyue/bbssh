@@ -16,11 +16,22 @@ func IsRoot() bool {
 }
 
 // 返回uid,gid,并不中断程序
-func LookupUidGid(username string) (string, string) {
+func LookupUidGid(username string) (uint32, uint32) {
 	u, err := user.Lookup(username)
 	if err != nil {
 		log.Println("One Error Happend Lookup User: ", username, err)
-		return "", ""
+		return 0, 0
 	}
-	return u.Uid, u.Gid
+
+	uid, err := strconv.Atoi(u.Uid)
+	if err != nil {
+		log.Println("One Error Happend uid atoi  ", username, err)
+		return 0, 0
+	}
+	gid, err := strconv.Atoi(u.Gid)
+	if err != nil {
+		log.Println("One Error Happend gid atoi  ", username, err)
+		return 0, 0
+	}
+	return uint32(uid), uint32(gid)
 }
