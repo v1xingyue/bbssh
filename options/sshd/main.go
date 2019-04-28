@@ -6,12 +6,13 @@ import (
 )
 
 var (
-	Version       = "0.0.0"
-	Name          = "sshd option"
-	BindAddr      = ""
-	RsaFile       = "id_rsa"
-	Help          = false
-	ServerVersion = "CatEyeSsh" + Version
+	Version  = "0.0.0"
+	Name     = "sshd option"
+	BindAddr = ""
+	RsaFile  = "id_rsa"
+	Help     = false
+	//前缀必须包含 SSH-
+	ServerVersion = "SSH-CatEye" + Version
 )
 
 func init() {
