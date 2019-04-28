@@ -23,6 +23,7 @@ func StartSshd() {
 		//PasswordCallback:  passwordCallback,
 		PublicKeyCallback: publicKeyCallback,
 		MaxAuthTries:      3,
+		ServerVersion:     option.ServerVersion,
 	}
 
 	privateBytes, err := ioutil.ReadFile(option.RsaFile)

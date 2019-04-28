@@ -44,8 +44,7 @@ func runSession(session *ssh.Session) {
 	err = session.Shell()
 	errorCallBack(err, "start shell")
 	err = session.Wait()
-	errorCallBack(err, "return")
-
+	//errorCallBack(err, "return")
 }
 
 func makeAuth(key string, t int) []ssh.AuthMethod {
@@ -99,8 +98,3 @@ func SshKeyLogin(host string, user string) {
 	pri := LoadSshPriKey(user, host)
 	loginWithKey(pri, host, user)
 }
-
-//  func main() {
-//  	//loginWithPassword(Password, Host, User)
-//  	loginWithKey(HostPrivateKey, LoginKeyHost, User)
-//  }
