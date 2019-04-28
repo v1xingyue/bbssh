@@ -9,6 +9,7 @@ git clone https://github.com/mattn/go-isatty vendor/github.com/mattn/go-isatty
 git clone https://github.com/ugorji/go vendor/github.com/ugorji/go
 git clone https://gopkg.in/go-playground/validator.v8 vendor/gopkg.in/go-playground/validator.v8
 git clone https://gopkg.in/yaml.v2 vendor/gopkg.in/yaml.v2
+git clone https://github.com/gin-contrib/sse vendor/github.com/gin-contrib/sse
 
 cd vendor/golang.org/x
 git clone https://github.com/golang/crypto.git
