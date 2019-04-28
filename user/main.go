@@ -3,6 +3,7 @@ package user
 import (
 	"log"
 	"os/user"
+	"strconv"
 )
 
 // 检测是否是root权限
